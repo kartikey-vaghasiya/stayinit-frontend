@@ -1,117 +1,101 @@
+// Import necessary modules and components
 import React from "react"
 import Comment from "./Comment"
 import { useAuth } from '../../contexts/Auth'
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
 
+// Define the CommentsDiv component
 export default function CommentsDiv({ id, type }) {
 
-
-
+    // Get authentication data from the Auth context
     const { authData } = useAuth()
     const { profile, isAuthenticate } = authData
+
+    // Get the navigate function from react-router-dom
     const navigate = useNavigate()
 
+    // Initialize state variables for rating, comment, and user profile
     const [rating, setRating] = React.useState(0)
     const [averageRating, setAverageRating] = React.useState(0);
     const [comment, setComment] = React.useState("")
     const [userProfile, setUserProfile] = React.useState({})
 
+    // Update userProfile state when profile changes
     React.useEffect(() => {
         setUserProfile(profile)
     }, [profile])
 
+    // Initialize state variables for comments and total comments
     const [comments, setComments] = React.useState([]);
     const [totalComments, setTotalComments] = React.useState(() => comments.length)
 
+    // Fetch comments on mount
     React.useEffect(() => {
         async function fetchComments() {
-            const response = await axios.get(`http://localhost:5000/api/v1/comment/${type}/${id}`)
-            const jsonResponse = response.data
+            // GET request to comments API
+            const response = await fetch(`http://localhost:5000/api/v1/comment/${type}/${id}`)
+            // Convert response to JSON
+            const jsonResponse = await response.json()
+            // Extract data from JSON response
+            const data = jsonResponse.data
             if (jsonResponse.success === true) {
-                setComments(jsonResponse.data.comments)
-                setTotalComments(jsonResponse.data.comments.length)
-                setAverageRating(jsonResponse.data.averageRating)
+                // Update state with fetched data
+                setComments(data.comments)
+                setAverageRating(data.averageRating)
+                setTotalComments(data.comments.length)
             }
         }
+        // Fetch comments
         fetchComments()
-    }, [totalComments])
+    }, [id, type])
 
-    // function to handle star clicked by user for rating
-    function handleStarClicked(event) {
-        const star = Number(event.target.id)
-        setRating(star)
-    }
-
-    // function to handle comment input
-    function handleComment(event) {
-        setComment(event.target.value)
-    }
-
-
-    // function to submit star ratings and comments to the backend
+    // Handle form submission
     async function handleReviewForm(event) {
+        // Stop form from submitting normally
         event.preventDefault()
 
-        if (!userProfile) {
+        // Redirect unauthenticated users to login
+        if (!isAuthenticate) {
             navigate("/login")
-        }
-
-        else {
-
+        } else {
+            // Authenticated users can post comments
             try {
-                const response = await axios.post('http://localhost:5000/api/v1/comment', {
-                    rating,
-                    comment,
-                    type,
-                    flat: type === "flat" ? id : null,
-                    hostel: type === "hostel" ? id : null,
-                    profile: userProfile._id
+                // POST request to comments API
+                const response = await fetch('http://localhost:5000/api/v1/comment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        rating,
+                        comment,
+                        type,
+                        flat: type === "flat" ? id : null,
+                        hostel: type === "hostel" ? id : null,
+                        profile: userProfile._id
+                    })
                 })
 
-                const responseJson = response.data
-                if (responseJson.success === true) {
+                // Convert response to JSON
+                const jsonResponse = await response.json()
+
+                // On success, reset form and update comments
+                if (jsonResponse.success === true) {
                     setComment("")
-                    setComments((prev) => {
-                        const newComments = [...prev, responseJson.data]
-                        return newComments
-                    })
-                    setTotalComments((prev) => prev + 1)
+                    setComments((prev) => [...prev, jsonResponse.data.comment])
                     setRating(0)
                 } else {
-                    console.error(data.message)
+                    // Log error message on failure
+                    console.error(jsonResponse.message)
                 }
-            }
-            catch (error) {
-                console.error(error.message)
-            }
-        }
-
-    };
-
-    // function to automatically allocate and deallocate star color 
-    React.useEffect(() => {
-
-        if (rating != 0) {
-            for (let i = 1; i <= rating; i++) {
-                document.getElementById(i).src = "/icons/yellow-star.png"
-            }
-
-            for (let i = rating + 1; i <= 5; i++) {
-                document.getElementById(i).src = "/icons/star.png"
+            } catch (error) {
+                // Log any errors during fetch
+                console.error(error)
             }
         }
-
-        else {
-            for (let i = 1; i <= 5; i++) {
-                document.getElementById(i).src = "/icons/star.png"
-            }
-        }
-
-    }, [rating])
+    }
 
 
-    console.log("comments", comments)
     return (
         <div className="md-down: justify-items-center grid grid-cols-1 lg:grid-cols-2 gap-8 relative ">
 
@@ -124,7 +108,7 @@ export default function CommentsDiv({ id, type }) {
                 <p>With Total : {totalComments} Ratings </p>
 
                 {/* User input to give rating and comment */}
-                <form onSubmit={handleReviewForm} className="flex flex-col gap-4 items-center justify-center">
+                <form onSubmit={handleCommentSubmit} className="flex flex-col gap-4 items-center justify-center">
 
                     <div className="flex flex-row gap-3 justify-center items-center">
                         <img className="w-[1.5rem] h-[1.5rem]" src="/icons/star.png" id="1" alt="star" onClick={(event) => handleStarClicked(event)} />
@@ -144,8 +128,6 @@ export default function CommentsDiv({ id, type }) {
             </div>
 
 
-
-            {/* Displaying all comments */}
             <div className="cursor-pointer rounded-[1rem] border shadow-sm border-[#F3EADC] p-6 flex items-center flex-col w-full h-[20rem] overflow-y-scroll min-w-[300px] max-w-[600px]">
 
                 <div className="flex flex-col gap-4 mt-[2rem]">

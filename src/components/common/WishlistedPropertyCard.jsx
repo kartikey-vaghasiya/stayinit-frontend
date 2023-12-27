@@ -1,15 +1,32 @@
+// Import necessary modules and components
 import React from "react"
 import { Link } from "react-router-dom"
-import axios from "axios"
 
+// Define the WishlistedPropertyCard component
 export default function WishlistedPropertyCard({ flatOrHostel, name, type, profile, setWishlistedProperty, locality, city, image }) {
 
+    // Function to remove a property from the wishlist
     async function removeFromWishlist() {
 
-        const res = await axios.delete(`http://localhost:5000/api/v1/wishlist/profile/${profile._id}/${type}/${flatOrHostel._id}`)
-        const wishlist = res.data;
-        if (wishlist.success === true) {
+        // Define the request options
+        const requestOption = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }
+
+        // Make a DELETE request to the wishlist API
+        const response = await fetch(`http://localhost:5000/api/v1/wishlist/profile/${profile._id}/${type}/${flatOrHostel._id}`)
+        // Convert the response to JSON
+        const jsonResponse = await response.json()
+        // Extract data from the JSON response
+        const data = jsonResponse.data
+
+        // If the response is successful, update the wishlisted properties
+        if (jsonResponse.success === true) {
             setWishlistedProperty((prev) => prev.filter((property) => {
+                // Filter out the removed property
                 if (property.flat) {
                     return property.flat._id !== flatOrHostel._id
                 }

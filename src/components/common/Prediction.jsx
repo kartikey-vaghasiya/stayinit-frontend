@@ -49,7 +49,7 @@ export default function Prediction() {
 
         // if user is authenticated... then make api call
         if (authData.isAuthenticate) {
-            const response = await fetch('http://localhost:8000/')
+
             const options = {
                 method: 'POST',
                 headers: {
@@ -74,10 +74,11 @@ export default function Prediction() {
                     totalfloornan: 0
                 }),
             };
+            const response = await fetch('http://localhost:8000/', response)
+            const responseJson = await response.json()
+            const data = responseJson.prediction
 
-            const data = await response.json()
-
-            setPrediction(data.prediction)
+            setPrediction(data)
         }
         // if user is not autheticated... then redirect to "login"
         else {
