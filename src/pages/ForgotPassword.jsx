@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Spinner } from "@material-tailwind/react";
 
-const ForgotPassword = () => {
 
+export default function ForgotPassword() {
+
+
+    const [loading, setLoading] = useState(false)
 
     const [error, setError] = useState("");
     const [isValidEmail, setIsValidEmail] = useState(false);
@@ -12,6 +16,7 @@ const ForgotPassword = () => {
 
         try {
 
+            setLoading(() => true)
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -22,7 +27,6 @@ const ForgotPassword = () => {
 
             const response = await fetch('http://localhost:5000/api/v1/auth/user/send-reset-password-token', requestOptions);
             const jsonResponse = await response.json()
-            const data = jsonResponse.data;
 
             if (jsonResponse.success === true) {
                 setIsValidEmail(() => true)
@@ -32,6 +36,8 @@ const ForgotPassword = () => {
             else {
                 setError(() => jsonResponse.message)
             }
+
+            setLoading(() => false)
 
         } catch (error) {
             console.error(error)
@@ -46,7 +52,7 @@ const ForgotPassword = () => {
                 isValidEmail ?
 
                     <div className='flex flex-col gap-6'>
-                        <h1 className='text-xl'>Follow the link send to your email for reset password... </h1>
+                        <h1 className='text-xl'>Follow the link send to {email} for reset password... </h1>
                         <Link to="/" className='text-white text-center rounded-[3rem] p-3 bg-colorG'>Go Back Home</Link>
                         <Link to="/login" className='text-white text-center rounded-[3rem] p-3 bg-colorG'> Go Back to Login </Link>
                     </div>
@@ -61,10 +67,11 @@ const ForgotPassword = () => {
                         className="flex flex-col gap-8 items-center w-[20rem]"
                     >
                         <div>
-                            <h1 className='text-3xl'>
+                            <h1 className='text-3xl font-Classy'>
                                 Reset Password
                             </h1>
                             <h6>Enter the email registerd with your account</h6>
+                            <p className='text-red-500 mt-2'>{error !== "" ? error.toLocaleUpperCase() : ""}</p>
                         </div>
 
                         <input type="text"
@@ -73,7 +80,9 @@ const ForgotPassword = () => {
                             className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                             onChange={(e) => setEmail(e.target.value)} />
 
-                        <button type='submit' className='bg-colorG w-full text-[#FFFBF2] px-4 py-4 rounded-[3rem]'>Verify Email</button>
+                        <button type="submit" className="bg-colorG w-full flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5">
+                            {loading ? <Spinner color="white" size="sm" /> : "Verify Email"}
+                        </button>
 
                     </form>
             }
@@ -88,5 +97,3 @@ const ForgotPassword = () => {
         </div>
     );
 };
-
-export default ForgotPassword;

@@ -38,7 +38,7 @@ function Auth({ children }) {
                 const isAuthenticate = jsonResponse.success;
 
                 if (isAuthenticate) {
-                    const profile = data.profile;
+                    const profile = data;
                     setAuthData({
                         isAuthenticate: isAuthenticate,
                         profile: profile
@@ -74,4 +74,4 @@ function Auth({ children }) {
     );
 }
 
-export { useAuth, Auth, AuthContext };
+export { useAuth, Auth };

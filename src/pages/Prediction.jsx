@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { roundToNearestThousand } from '../../utils/utilityFunctions';
 
 
-const inputStyleClass =
+const filterStyle =
     'py-2 px-4 w-full focus:outline-none placeholder:text-[#073937] hover:bg-colorY2H focus:placeholder-[#FFFBF2] focus:bg-[#073937] focus:text-[#D8D4CD] bg-colorY2 rounded-[3rem] border border-[#D8D4CD]';
 
 export default function Prediction() {
@@ -103,7 +103,7 @@ export default function Prediction() {
                         Property Sqft
                     </label>
                     <input
-                        className={inputStyleClass}
+                        className={filterStyle}
                         type="number"
                         name="property_sqft"
                         value={propertyData.property_sqft}
@@ -117,7 +117,7 @@ export default function Prediction() {
                         Property BHK
                     </label>
                     <input
-                        className={inputStyleClass}
+                        className={filterStyle}
                         type="number"
                         name="property_bhk"
                         value={propertyData.property_bhk}
@@ -131,7 +131,7 @@ export default function Prediction() {
                         Property City
                     </label>
                     <input
-                        className={inputStyleClass}
+                        className={filterStyle}
                         type="text"
                         name="property_city"
                         value={propertyData.property_city}
@@ -145,7 +145,7 @@ export default function Prediction() {
                         Property Locality
                     </label>
                     <input
-                        className={inputStyleClass}
+                        className={filterStyle}
                         type="text"
                         name="property_locality"
                         value={propertyData.property_locality}
@@ -159,7 +159,7 @@ export default function Prediction() {
                         Is Furnished
                     </label>
                     <select
-                        className={inputStyleClass}
+                        className={filterStyle}
                         name="is_furnished"
                         value={propertyData.is_furnished}
                         onChange={handleChange}
@@ -175,7 +175,7 @@ export default function Prediction() {
                         Property Project
                     </label>
                     <input
-                        className={inputStyleClass}
+                        className={filterStyle}
                         type="text"
                         name="property_project"
                         value={propertyData.property_project}
@@ -189,7 +189,7 @@ export default function Prediction() {
                         Number of Baths
                     </label>
                     <input
-                        className={inputStyleClass}
+                        className={filterStyle}
                         type="number"
                         name="num_of_baths"
                         value={propertyData.num_of_baths}
@@ -203,7 +203,7 @@ export default function Prediction() {
                         Suitable for
                     </label>
                     <select
-                        className={inputStyleClass}
+                        className={filterStyle}
                         name="bachelors_or_family"
                         value={propertyData.bachelors_or_family}
                         onChange={handleChange}
@@ -220,7 +220,7 @@ export default function Prediction() {
                         Floor Number
                     </label>
                     <input
-                        className={inputStyleClass}
+                        className={filterStyle}
                         type="number"
                         name="floornumber"
                         value={propertyData.floornumber}
@@ -234,7 +234,7 @@ export default function Prediction() {
                         Total Floor
                     </label>
                     <input
-                        className={inputStyleClass}
+                        className={filterStyle}
                         type="number"
                         name="totalfloor"
                         value={propertyData.totalfloor}

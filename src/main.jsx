@@ -11,38 +11,38 @@ import {
 
 import { ThemeProvider } from "@material-tailwind/react";
 
-import Home from './components/common/Home'
-import HostelPage from './components/hostels/HostelPage';
-import FlatPage from './components/flats/FlatPage';
-import Login from './components/auth/Login'
-import Signup from './components/auth/Signup'
-import Prediction from './components/common/Prediction'
-import BasicPage from "./components/common/BasicPage"
-import HostelsListing from './components/hostels/HostelsListing';
-import FlatsListing from './components/flats/FlatsListing';
-import NotFoundPage from './components/common/404';
-import ForgotPassword from './components/auth/ForgotPassword';
-import ResetPassword from './components/auth/ResetPassword';
-import Wishlist from './components/common/Wishlist';
+import Home from './pages/Home'
+import Hostel from './pages/Hostel';
+import Flat from './pages/Flat';
+import Login from './pages/Login'
+import Register from './pages/Register'
+// import Prediction from './pages/Prediction'
+import Layout from "./pages/Layout"
+import HostelsListing from './pages/HostelsListing';
+import NotFound from './pages/NotFound';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import FlatListing from './pages/FlatsListing';
+import Likes from './pages/Likes';
 
 const router = createBrowserRouter(createRoutesFromElements(
-  <Route path="/" element={<BasicPage />}>
+  <Route path="/" element={<Layout />}>
     <Route index element={<Home />} />
-    <Route path="/prediction" element={<Prediction />} />
+    {/* <Route path="/prediction" element={<Prediction />} /> */}
 
     <Route path="/hostels" element={<HostelsListing />} />
-    <Route path="/hostels/:id" element={<HostelPage />} />
-    <Route path="/flats" element={<FlatsListing />} />
-    <Route path="/flats/:id" element={<FlatPage />} />
+    <Route path="/hostels/:id" element={<Hostel />} />
+    <Route path="/flats" element={<FlatListing />} />
+    <Route path="/flats/:id" element={<Flat />} />
 
     <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+
     <Route path="/login/forgot-password" element={<ForgotPassword />} />
-    <Route path="/signup" element={<Signup />} />
-
     <Route path="/user/reset-password" element={<ResetPassword />} />
-    <Route path="/user/wishlist" element={<Wishlist />} />
+    <Route path="/user/likes" element={<Likes />} />
 
-    <Route path="*" element={<NotFoundPage />} />
+    <Route path="*" element={<NotFound />} />
   </Route>
 ))
 

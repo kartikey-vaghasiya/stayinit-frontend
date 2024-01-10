@@ -1,7 +1,6 @@
-function getFirstImage(props) {
-    if (Array.isArray(props.arrayOfImages) && props.arrayOfImages.length > 0) {
-        console.log(props.arrayOfImages[0].url)
-        return props.arrayOfImages[0].url;
+function getFirstImage(flatOrHostel) {
+    if (Array.isArray(flatOrHostel.arrayOfImages) && flatOrHostel.arrayOfImages.length > 0) {
+        return flatOrHostel.arrayOfImages[0].url;
     } else {
         return undefined;
     }

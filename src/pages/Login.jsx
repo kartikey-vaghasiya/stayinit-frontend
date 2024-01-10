@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../contexts/Auth';
+import { useAuth } from '../contexts/Auth';
+
+import { Spinner } from "@material-tailwind/react";
 
 export default function Login() {
 
@@ -9,6 +11,8 @@ export default function Login() {
 
     const [loginData, setLoginData] = React.useState({})
     const [error, setError] = React.useState("")
+
+    const [loading, setLoading] = React.useState(false)
 
     function handleLoginInput(event) {
         const { name, value } = event.target;
@@ -23,6 +27,8 @@ export default function Login() {
         try {
 
             event.preventDefault()
+
+            setLoading(true);
 
             const requestOptions = {
                 method: 'POST',
@@ -47,6 +53,8 @@ export default function Login() {
             } else {
                 setError(jsonResponse.message)
             }
+
+            setLoading(false);
         } catch (error) {
             console.error(error)
         }
@@ -54,11 +62,12 @@ export default function Login() {
     }
 
     return (
-        <section>
-            <div className="grid grid-cols-1 lg:grid-cols-1">
+        <section className='bg-[#FFFBF2]'>
+            <div className="grid grid-cols-1 lg:grid-cols-1 ">
                 <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
                     <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
-                        <h2 className="text-3xl leading-tight text-black sm:text-4xl">Sign in</h2>
+                        <h2 className="text-3xl leading-tight text-black sm:text-4xl font-Classy">Sign in</h2>
+                        <p className='text-red-500'>{error !== "" ? error.toLocaleUpperCase() : ""}</p>
                         <p className="mt-2 text-sm text-gray-600">
                             Don&apos;t have an account?{' '}
                             <Link
@@ -71,6 +80,7 @@ export default function Login() {
                         </p>
                         {/* Login Form */}
                         <form onSubmit={handleLoginSubmit} method="POST" className="mt-8">
+
                             <div className="space-y-5">
                                 <div>
                                     <label htmlFor="" className="text-base font-medium text-gray-900">
@@ -117,17 +127,9 @@ export default function Login() {
                                 </div>
                                 <div>
 
-                                    {error !== "" &&
-                                        <div>
-                                            <h1 className='px-[2rem] py-[1rem] bg-red-200 text-red-600 rounded-[3rem]'>{error}</h1>
-                                        </div>
-                                    }
-                                    <button type="submit" class="w-full">
-                                        <div className="bg-colorG text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5">
-                                            <div className="text-base leading-6 self-center whitespace-nowrap">
-                                                Login
-                                            </div>
-                                        </div>
+
+                                    <button type="submit" className="bg-colorG w-full flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5">
+                                        {loading ? <Spinner color="white" size="sm" /> : "Login"}
                                     </button>
                                 </div>
                             </div>

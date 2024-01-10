@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Spinner } from "@material-tailwind/react";
 
-function ForgotPassword() {
+
+export default function ResetPassword() {
 
 
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState("");
     const [password, setPassword] = useState('');
@@ -14,6 +18,7 @@ function ForgotPassword() {
     async function handlePasswordsSubmit() {
         try {
 
+            setLoading(() => true)
             const resetToken = searchParams.get("token")
             const email = searchParams.get("email")
             const requestOptions = {
@@ -40,9 +45,12 @@ function ForgotPassword() {
                 setError(() => jsonResponse.message);
             }
 
+            setLoading(() => false)
+
         } catch (error) {
             console.error(error);
         }
+
     };
 
     return (
@@ -56,7 +64,10 @@ function ForgotPassword() {
                 }}
                     className="flex flex-col gap-4"
                 >
-                    <h1 className="mb-4 text-3xl text-center">Reset Password</h1>
+                    <h1 className="mb-4 text-3xl text-center font-Classy">Reset Password</h1>
+
+                    <p className='text-red-500'>{error !== "" ? error.toLocaleUpperCase() : ""}</p>
+
 
                     <input
                         type="password"
@@ -73,12 +84,6 @@ function ForgotPassword() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
 
-                    {error !== "" &&
-                        <div className=''>
-                            <h1 className='px-3 text-center w-full py-[1rem] bg-red-200 text-white rounded-[3rem]'>{error}</h1>
-                        </div>
-                    }
-
                     <button type="submit" className="bg-colorG w-full text-[#FFFBF2] px-4 py-3 rounded-[3rem]">
                         Send
                     </button>
@@ -89,5 +94,3 @@ function ForgotPassword() {
         </div>
     );
 };
-
-export default ForgotPassword;

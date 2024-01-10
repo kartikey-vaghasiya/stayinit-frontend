@@ -1,10 +1,13 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Spinner } from "@material-tailwind/react";
 
 export default function Signup() {
 
 
     const navigate = useNavigate();
+
+    const [loading, setLoading] = React.useState(false)
 
     const [email, setEmail] = React.useState("");
     const [isOtpSent, setIsOtpSent] = React.useState(false)
@@ -18,6 +21,9 @@ export default function Signup() {
         event.preventDefault()
         if (!email) { setError("Please enter your email") }
 
+        // start loading when user submit email
+        setLoading(true)
+
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -25,6 +31,7 @@ export default function Signup() {
             },
             body: JSON.stringify({ email }),
         }
+
 
         const response = await fetch('http://localhost:5000/api/v1/auth/register/send-verification-otp', requestOptions);
         const jsonResponse = await response.json()
@@ -39,10 +46,15 @@ export default function Signup() {
             setIsOtpSent(false)
             setError(jsonResponse.message)
         }
+
+        setLoading(false)
+
     }
 
     async function handleOtpSubmit(event) {
         event.preventDefault()
+
+        setLoading(true)
 
         const requestOptions = {
             method: 'POST',
@@ -65,6 +77,8 @@ export default function Signup() {
             setIsUserVerified(false)
             setError(jsonResponse.message)
         }
+
+        setLoading(false)
     }
 
     function handleSignupInput(event) {
@@ -79,6 +93,8 @@ export default function Signup() {
 
         try {
             event.preventDefault()
+
+            setLoading(true)
 
             const requestOptions = {
                 method: 'POST',
@@ -104,18 +120,21 @@ export default function Signup() {
             else {
                 setError(jsonResponse.message)
             }
+
+            setLoading(false)
+
         } catch (error) {
             console.error(error)
         }
     }
 
     return (
-        <section className='w-full h-full justify-center items-center '>
-            <div className='h-full w-full flex flex-col justify-evenly items-center'>
-                <h2 className="text-3xl leading-tight text-black sm:text-4xl">Signup/Register</h2>
+        <section className='w-full h-full justify-center items-center bg-colorY'>
+            <div className='h-full w-full flex flex-col gap-8 justify-center items-center'>
+                <h2 className="text-3xl leading-tight text-black sm:text-4xl font-Classy">Register</h2>
                 <div>
                     <p className='text-red-500'>{error !== "" ? error.toLocaleUpperCase() : ""}</p>
-                    <p className='font-semibold cursor-pointer'>Already have an accout?<Link to="/login">Login</Link></p>
+                    <p className='cursor-pointer'>Already have an accout?<Link to="/login">Login</Link></p>
                 </div>
                 <div className='flex flex-col'>
                     {!isOtpSent ?
@@ -130,13 +149,15 @@ export default function Signup() {
                                     value={email}
                                     className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                                 />
-                                <input type="submit" className="bg-colorG text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5" value="Submit" />
+                                <button type="submit" className="bg-colorG flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5">
+                                    {loading ? <Spinner color="white" size="sm" /> : "Send OTP"}
+                                </button>
                             </form>
                         </div>
                         :
                         !isUserVerified ?
                             <div className='flex flex-col w-[20rem] gap-4'>
-                                <h1 className='mt-2 text-xl text-gray-600'> You will get OTP email </h1>
+                                <h1 className='mt-2 text-xl text-gray-600'> You will get OTP email at {email}</h1>
                                 {/* otp form */}
                                 <form onSubmit={(event) => { handleOtpSubmit(event) }} className='flex flex-col' >
 
@@ -147,7 +168,9 @@ export default function Signup() {
                                         placeholder='OTP'
                                         className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                                     />
-                                    <input type="submit" className='bg-colorG text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5' value="Verify OTP" />
+                                    <button type="submit" className="bg-colorG flex justify-center text-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5">
+                                        {loading ? <Spinner color="white" size="sm" /> : "Verify OTP"}
+                                    </button>
                                 </form>
                             </div>
                             :
@@ -188,7 +211,9 @@ export default function Signup() {
                                         name='confirmPassword'
                                         className="flex w-full rounded-[3rem] border-2 border-[#d5bf9f] hover:bg-colorY2H px-3 py-3 text-sm placeholder:text-[#073937] focus:outline-none"
                                     />
-                                    <input type="submit" className="bg-colorG text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5" value="Signup" />
+                                    <button type="submit" className="bg-colorG flex justify-center cursor-pointer text-[#FFFBF2] px-4 py-4 rounded-[3rem] md-down: my-5">
+                                        {loading ? <Spinner color="white" size="sm" /> : "Register"}
+                                    </button>
                                 </form>
                             </div>
                     }
